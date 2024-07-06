@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Library</OutputType>
+		<TargetFramework>net472</TargetFramework>
+		<Platforms>x64</Platforms>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Lib.Harmony" Version="2.3.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Reference Include="TaleWorlds.Core">
+		<HintPath>C:\UserData\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.Core.dll</HintPath>
+	  </Reference>
+	  <Reference Include="TaleWorlds.Engine">
+		<HintPath>C:\UserData\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.Engine.dll</HintPath>
+	  </Reference>
+	  <Reference Include="TaleWorlds.Library">
+		<HintPath>C:\UserData\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.Library.dll</HintPath>
+	  </Reference>
+	  <Reference Include="TaleWorlds.Localization">
+		<HintPath>C:\UserData\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.Localization.dll</HintPath>
+	  </Reference>
+	  <Reference Include="TaleWorlds.MountAndBlade">
+		<HintPath>C:\UserData\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.MountAndBlade.dll</HintPath>
+	  </Reference>
+	  <Reference Include="TaleWorlds.CampaignSystem">
+		<HintPath>C:\UserData\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.CampaignSystem.dll</HintPath>
+	  </Reference>
+	  <Reference Include="TaleWorlds.ObjectSystem">
+		<HintPath>C:\UserData\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.ObjectSystem.dll</HintPath>
+	  </Reference>
+	  <Reference Include="TaleWorlds.DotNet">
+		<HintPath>C:\UserData\Steam\steamapps\common\Mount &amp; Blade II Bannerlord\bin\Win64_Shipping_Client\TaleWorlds.DotNet.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
+
+</Project>

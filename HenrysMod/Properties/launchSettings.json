@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Start": {
+      "commandName": "Executable",
+      "executablePath": "C:\\UserData\\Steam\\steamapps\\common\\Mount & Blade II Bannerlord\\bin\\Win64_Shipping_Client\\Bannerlord.exe",
+      "commandLineArgs": "/singleplayer _MODULES_*Native*SandBoxCore*CustomBattle*SandBox*StoryMode*BirthAndDeath*HenrysMod*_MODULES_",
+      "workingDirectory": "C:\\UserData\\Steam\\steamapps\\common\\Mount & Blade II Bannerlord\\bin\\Win64_Shipping_Client"
+    }
+  }
+}
