@@ -40,6 +40,7 @@ namespace HenrysMod
         protected override void OnGameStart(Game game, IGameStarter gameStarterObject)
         {
             gameStarterObject.AddModel(new HenrysCustomBattleAgentStatCalculateModel());
+            gameStarterObject.AddModel(new HenrysCustomAgentApplyDamageModel());
         }
     }
 
@@ -69,6 +70,49 @@ namespace HenrysMod
                     member.AddToCountsAtIndex(idx, add);
                 }
             }
+        }
+    }
+
+    public class HenrysCustomAgentApplyDamageModel : CustomAgentApplyDamageModel
+    {
+        public override bool DecideCrushedThrough(Agent attackerAgent, Agent defenderAgent,
+            float totalAttackEnergy, Agent.UsageDirection attackDirection, StrikeType strikeType,
+            WeaponComponentData defendItem, bool isPassiveUsageHit)
+        {
+            if (attackerAgent == null || attackerAgent.Character == null)
+                return false;
+
+            if (defenderAgent == null || defenderAgent.Character == null || defendItem == null)
+                return false;
+
+            var attackerWieldedItemIndex = attackerAgent.GetWieldedItemIndex(Agent.HandIndex.OffHand);
+            if (attackerWieldedItemIndex == EquipmentIndex.None)
+                attackerWieldedItemIndex = attackerAgent.GetWieldedItemIndex(Agent.HandIndex.MainHand);
+            var attackerWeaponComponentData = (attackerWieldedItemIndex != EquipmentIndex.None) ?
+                attackerAgent.Equipment[attackerWieldedItemIndex].CurrentUsageItem : null;
+            if (attackerWeaponComponentData == null)
+                return false;
+            var attackerSkill = (float)MissionGameModels.Current.AgentStatCalculateModel
+                .GetEffectiveSkillForWeapon(attackerAgent, attackerWeaponComponentData);
+            if (attackerSkill < 0) attackerSkill = 0;
+
+            var defenderSkill = (float)MissionGameModels.Current.AgentStatCalculateModel
+                .GetEffectiveSkillForWeapon(defenderAgent, defendItem);
+            if (defenderSkill < 0) defenderSkill = 0;
+
+            var skillDiff = attackerSkill - defenderSkill;
+            if (skillDiff <= 0.0f) skillDiff = 0.0f;
+
+            var rate = MathF.Log(0.05f * skillDiff) / 2.0f; // ln(0.05x) / 2
+            if (rate <= 0.0f) rate = 0.0f;
+            else if (rate >= 1.0f) rate = 1.0f;
+            if (Utils.Random.NextFloat() > rate)
+                return false;
+
+            if (attackerAgent.IsPlayerControlled)
+                InformationManager.DisplayMessage(new InformationMessage("Crush through attack!"));
+
+            return true;
         }
     }
 
@@ -186,6 +230,18 @@ namespace HenrysMod
         }
     }
 
+    [HarmonyPatch(typeof(Mission), "UpdateMomentumRemaining")]
+    public class Mission_UpdateMomentumRemaining_Patch
+    {
+        public static void Postfix(ref float momentumRemaining, ref Blow b, ref AttackCollisionData collisionData,
+            ref Agent attacker, ref Agent victim, ref MissionWeapon attackerWeapon, ref bool isCrushThrough)
+        {
+            if (!isCrushThrough) return;
+            momentumRemaining *= 1.0f / 0.3f; // revert crush through multiplier
+            momentumRemaining *= 0.9f; // reapply our multiplier
+        }
+    }
+
     [HarmonyPatch(typeof(Mission), "RegisterBlow")]
     public class Mission_RegisterBlow_Patch
     {
@@ -244,7 +300,7 @@ namespace HenrysMod
                 .GetEffectiveSkill(victim, DefaultSkills.Athletics);
             if (skill < 0) skill = 0;
 
-            var rate = 1.0f - 0.0016f * skill; // 1 - 0.0016x
+            var rate = 1.0f - 0.0025f * skill; // 1 - 0.0025x
             if (rate <= 0.0f) rate = 0.0f;
             else if (rate >= 1.0f) rate = 1.0f;
 
